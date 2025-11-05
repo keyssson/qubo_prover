@@ -89,7 +89,12 @@ def main():
         action="store_true",
         help="显示所有变量（包括值为 0 的）"
     )
-    
+    parser.add_argument(
+        "--show-qubo",
+        action="store_true",
+        help="显示完整的 QUBO 方程"
+    )
+
     args = parser.parse_args()
     
     # 解析公理
@@ -123,10 +128,18 @@ def main():
         
         model, var_map, offset = builder.build(axioms, goal)
         qubo, bqm, offset = builder.compile_qubo(model)
-        
+
         if args.verbose:
             print()
             print(builder.summary())
+
+        # 显示 QUBO 方程
+        if args.show_qubo or args.verbose:
+            print(f"\n[QUBO 方程]")
+            print("=" * 70)
+            print("完整的二次无约束二元优化（QUBO）方程:")
+            print()
+            _display_qubo_equation(qubo, offset)
         
         # 2. 采样
         print(f"\n[采样阶段]")
@@ -161,10 +174,13 @@ def main():
         if success:
             print("✓ 证明成功！")
             print()
-            print("证明路径:")
+            print("=" * 70)
+            print("详细证明路径:")
+            print("=" * 70)
             proof_steps = extract_proof_path(assignment, var_info)
             for step in proof_steps:
-                print(f"  {step}")
+                print(step)
+            print("=" * 70)
         else:
             print("✗ 证明失败")
             print(f"原因: {message}")
@@ -189,6 +205,53 @@ def main():
             import traceback
             traceback.print_exc()
         return 2
+
+
+def _display_qubo_equation(qubo: dict, offset: float):
+    """
+    显示完整的 QUBO 方程
+
+    Args:
+        qubo: QUBO 字典 {(i, j): coefficient}
+        offset: 常数项
+    """
+    print("能量函数 E(x) = Σ Q_ij * x_i * x_j + offset")
+    print()
+    print("其中:")
+
+    # 分类显示
+    linear_terms = []
+    quadratic_terms = []
+
+    for (i, j), coeff in sorted(qubo.items()):
+        if i == j:
+            # 线性项
+            linear_terms.append((i, coeff))
+        else:
+            # 二次项
+            quadratic_terms.append((i, j, coeff))
+
+    # 显示线性项
+    if linear_terms:
+        print("  线性项（一次项）:")
+        for var, coeff in linear_terms:
+            sign = "+" if coeff >= 0 else ""
+            print(f"    {sign}{coeff:.1f} * {var}")
+
+    # 显示二次项
+    if quadratic_terms:
+        print()
+        print("  二次项（交叉项）:")
+        for var1, var2, coeff in quadratic_terms:
+            sign = "+" if coeff >= 0 else ""
+            print(f"    {sign}{coeff:.1f} * {var1} * {var2}")
+
+    # 显示常数项
+    print()
+    print(f"  常数项（offset）: {offset:.1f}")
+    print()
+    print(f"总计: {len(linear_terms)} 个线性项 + {len(quadratic_terms)} 个二次项")
+    print("=" * 70)
 
 
 if __name__ == "__main__":

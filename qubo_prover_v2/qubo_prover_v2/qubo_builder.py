@@ -184,9 +184,11 @@ class QUBOBuilder:
             "axiom_vars": [name for name, _ in self.axiom_vars],
             "goal_var": self.goal_var[0] if self.goal_var else None,
             "formula_map": {
-                name: str(formula) 
+                name: str(formula)
                 for name, formula in self.encoder.formula_map.items()
-            }
+            },
+            "axiom_formulas": [str(ax) for ax in self.axioms],
+            "goal_formula": str(self.goal) if self.goal else ""
         }
     
     def summary(self) -> str:
