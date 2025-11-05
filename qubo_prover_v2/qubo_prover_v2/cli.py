@@ -164,9 +164,9 @@ def main():
         var_info = builder.get_variable_info()
         axiom_vars = var_info["axiom_vars"]
         goal_var = var_info["goal_var"]
-        
-        success, message = verify_assignment(assignment, axiom_vars, goal_var)
-        
+
+        success, message = verify_assignment(assignment, axiom_vars, goal_var, var_info)
+
         print(f"验证结果: {message}")
         
         # 5. 输出结果

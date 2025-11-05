@@ -70,17 +70,19 @@ def best_by_lowest_energy(rows: List[Tuple[Dict[str, int], float]]) -> Tuple[Dic
     return min(rows, key=lambda t: t[1])
 
 
-def verify_assignment(assignment: Dict[str, int], 
+def verify_assignment(assignment: Dict[str, int],
                      axiom_vars: List[str],
-                     goal_var: str) -> Tuple[bool, str]:
+                     goal_var: str,
+                     var_info: Dict[str, Any] = None) -> Tuple[bool, str]:
     """
     验证赋值是否满足证明要求
-    
+
     Args:
         assignment: 变量赋值
         axiom_vars: 公理变量名列表
         goal_var: 目标变量名
-        
+        var_info: 变量信息（用于验证结构约束）
+
     Returns:
         (是否成功, 消息)
     """
@@ -88,12 +90,59 @@ def verify_assignment(assignment: Dict[str, int],
     for ax_var in axiom_vars:
         if assignment.get(ax_var, 0) != 1:
             return False, f"公理 {ax_var} 未满足（值为 {assignment.get(ax_var, 0)}）"
-    
+
     # 检查目标是否为真
     if assignment.get(goal_var, 0) != 1:
         return False, f"目标 {goal_var} 未满足（值为 {assignment.get(goal_var, 0)}）"
-    
+
+    # 【新增】验证结构约束的一致性
+    if var_info:
+        is_consistent, error_msg = _verify_structural_constraints(assignment, var_info)
+        if not is_consistent:
+            return False, f"结构约束违反: {error_msg}"
+
     return True, "所有约束满足"
+
+
+def _verify_structural_constraints(assignment: Dict[str, int],
+                                   var_info: Dict[str, Any]) -> Tuple[bool, str]:
+    """
+    验证结构约束是否满足
+
+    检查逻辑运算符的语义是否正确，例如：
+    - 如果 P=1 且 P→Q 的变量=1，那么 Q 必须=1
+    - 如果 P=1 且 ~P 的变量=1，那么矛盾
+    """
+    formula_map = var_info.get("formula_map", {})
+
+    # 检查所有 IMPLY 约束
+    for var_name, formula_str in formula_map.items():
+        if "->" in formula_str and assignment.get(var_name, 0) == 1:
+            # 解析 P->Q
+            parts = formula_str.strip("()").split("->")
+            if len(parts) == 2:
+                left = parts[0].strip()
+                right = parts[1].strip()
+
+                # 如果 P=1 且 P->Q=1，那么 Q 必须=1
+                if assignment.get(left, 0) == 1:
+                    if assignment.get(right, 0) != 1:
+                        return False, f"蕴涵约束违反: {left}=1 且 {var_name}=1，但 {right}=0"
+
+    # 检查所有 NOT 约束
+    for var_name, formula_str in formula_map.items():
+        if var_name.startswith("Not_") or var_name.startswith("Goal_Not_") or var_name.startswith("Axiom") and "_Not_" in var_name:
+            # 提取被否定的变量
+            if "~" in formula_str:
+                operand = formula_str.replace("~", "").strip()
+                not_val = assignment.get(var_name, 0)
+                operand_val = assignment.get(operand, 0)
+
+                # ~P 和 P 必须互斥
+                if not_val + operand_val != 1:
+                    return False, f"否定约束违反: {var_name}={not_val} 但 {operand}={operand_val}，应该互斥"
+
+    return True, ""
 
 
 def extract_proof_path(assignment: Dict[str, int],
