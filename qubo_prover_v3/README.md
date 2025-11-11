@@ -81,8 +81,11 @@ qubo_prover_v3/
 
 ```bash
 cd qubo_prover_v3
+<<<<<<< HEAD
 conda create -n qubo-prover python=3.9
 conda activate qubo-prover
+=======
+>>>>>>> origin/main
 pip install -r requirements.txt
 ```
 
