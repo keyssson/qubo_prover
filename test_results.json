@@ -1,0 +1,194 @@
+[
+  {
+    "test_case": {
+      "name": "Modus Ponens (肯定前件)",
+      "axioms": "P; P->Q",
+      "goal": "Q",
+      "expected_rule": "modus_ponens",
+      "description": "从 P 和 P→Q 推出 Q"
+    },
+    "baseline": {
+      "success": false,
+      "energy": null,
+      "time": 2.2303426265716553,
+      "variables": null,
+      "qubo_terms": null
+    },
+    "neural": {
+      "success": false,
+      "energy": null,
+      "time": 2.1930811405181885,
+      "variables": null,
+      "qubo_terms": null,
+      "predicted_weights": {}
+    }
+  },
+  {
+    "test_case": {
+      "name": "Modus Tollens (否定后件)",
+      "axioms": "P->Q; ~Q",
+      "goal": "~P",
+      "expected_rule": "modus_tollens",
+      "description": "从 P→Q 和 ~Q 推出 ~P"
+    },
+    "baseline": {
+      "success": false,
+      "energy": null,
+      "time": 2.179800033569336,
+      "variables": null,
+      "qubo_terms": null
+    },
+    "neural": {
+      "success": false,
+      "energy": null,
+      "time": 2.1880404949188232,
+      "variables": null,
+      "qubo_terms": null,
+      "predicted_weights": {}
+    }
+  },
+  {
+    "test_case": {
+      "name": "Syllogism (三段论)",
+      "axioms": "P; P->Q; Q->R",
+      "goal": "R",
+      "expected_rule": "modus_ponens",
+      "description": "从 P, P→Q, Q→R 推出 R"
+    },
+    "baseline": {
+      "success": false,
+      "energy": null,
+      "time": 2.238807439804077,
+      "variables": null,
+      "qubo_terms": null
+    },
+    "neural": {
+      "success": false,
+      "energy": null,
+      "time": 2.218050241470337,
+      "variables": null,
+      "qubo_terms": null,
+      "predicted_weights": {}
+    }
+  },
+  {
+    "test_case": {
+      "name": "And Elimination Left (合取消除-左)",
+      "axioms": "P&Q",
+      "goal": "P",
+      "expected_rule": "and_elim_left",
+      "description": "从 P∧Q 推出 P"
+    },
+    "baseline": {
+      "success": false,
+      "energy": null,
+      "time": 2.2267160415649414,
+      "variables": null,
+      "qubo_terms": null
+    },
+    "neural": {
+      "success": false,
+      "energy": null,
+      "time": 2.24236798286438,
+      "variables": null,
+      "qubo_terms": null,
+      "predicted_weights": {}
+    }
+  },
+  {
+    "test_case": {
+      "name": "And Elimination Right (合取消除-右)",
+      "axioms": "P&Q",
+      "goal": "Q",
+      "expected_rule": "and_elim_right",
+      "description": "从 P∧Q 推出 Q"
+    },
+    "baseline": {
+      "success": false,
+      "energy": null,
+      "time": 2.144989490509033,
+      "variables": null,
+      "qubo_terms": null
+    },
+    "neural": {
+      "success": false,
+      "energy": null,
+      "time": 2.3469936847686768,
+      "variables": null,
+      "qubo_terms": null,
+      "predicted_weights": {}
+    }
+  },
+  {
+    "test_case": {
+      "name": "And Introduction (合取引入)",
+      "axioms": "P; Q",
+      "goal": "P&Q",
+      "expected_rule": "and_intro",
+      "description": "从 P 和 Q 推出 P∧Q"
+    },
+    "baseline": {
+      "success": false,
+      "energy": null,
+      "time": 2.2092652320861816,
+      "variables": null,
+      "qubo_terms": null
+    },
+    "neural": {
+      "success": false,
+      "energy": null,
+      "time": 2.330503225326538,
+      "variables": null,
+      "qubo_terms": null,
+      "predicted_weights": {}
+    }
+  },
+  {
+    "test_case": {
+      "name": "Double Negation (双重否定消除)",
+      "axioms": "~~P",
+      "goal": "P",
+      "expected_rule": "double_neg_elim",
+      "description": "从 ~~P 推出 P"
+    },
+    "baseline": {
+      "success": false,
+      "energy": null,
+      "time": 2.3369274139404297,
+      "variables": null,
+      "qubo_terms": null
+    },
+    "neural": {
+      "success": false,
+      "energy": null,
+      "time": 2.2365036010742188,
+      "variables": null,
+      "qubo_terms": null,
+      "predicted_weights": {}
+    }
+  },
+  {
+    "test_case": {
+      "name": "Complex Chain (复杂链式推理)",
+      "axioms": "P; P->Q; Q->R; R->S",
+      "goal": "S",
+      "expected_rule": "modus_ponens",
+      "description": "从 P, P→Q, Q→R, R→S 推出 S"
+    },
+    "baseline": {
+      "success": false,
+      "energy": null,
+      "time": 2.230024576187134,
+      "variables": null,
+      "qubo_terms": null
+    },
+    "neural": {
+      "success": false,
+      "energy": null,
+      "time": 2.1784379482269287,
+      "variables": null,
+      "qubo_terms": null,
+      "predicted_weights": {}
+    }
+  }
+]
